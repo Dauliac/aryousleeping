@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block styles %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
+{% endblock %}
+{% block content %}
+	<div class="toolbar">
+			<a class="button" href="/logout">logout</a>
+			<button class="button" id="show-form_button" onclick="toogleForm()">Add server</button>
+			<div class=".add-container">
+				<div id="form" class="add-server">
+					<div class=add-header>
+						<span>add server</span>
+						<button class="cancel-form_button" onclick="toogleForm()">
+							<i class="cancel-form_button-icon material-icons">close</i>
+						</button>
+					</div>
+					<form class="add-content" action="/admin/server/add/" method="POST">
+						<input type="hostname" name="hostname" placeholder="Hostname">
+						<input type="alias" name="alias" placeholder="Alias">
+						<input class="button" type="submit" value="Add Server">
+					</form>
+				</div>
+			</div>
+		</div>
+	<div>
+	 {% for server in servers %}
+		<div class="server-stats">
+			{% if server.last_status == '500' %}
+			<div class="server error">
+				<ul>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+			<div class="server-infos">
+				<span>OFF</span>			
+			{% elif server.last_status == '200' %}
+			<div class="server">
+				<ul>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+			<div class="server-infos">
+				<span>ON</span>
+			{% else %}
+			<div class="server warning">
+				<ul>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+			</div>
+			<div class="server-infos">
+				<span>WARNING</span>
+			{% endif %}
+					<span id="">/ {{ server.hostname }} #{{ server.alias }} - status: {{ server.last_status}}</span>
+					<span class="cursor">_</span>
+			</div>
+				<div class="server-option">
+					<a class="icon-button" href="/admin/server/{{ server.id }}/"><i class="button_icon material-icons">dvr</i></a>
+					<a class="icon-button" href="https://{{ server.hostname }}/"><i class="button_icon material-icons">http</i></a>
+					<a class="icon-button" href="/admin/server/{{ server.id }}/remove/"><i class="button_icon material-icons">delete</i></a>
+				</div>
+			</div>
+	{% endfor %}
+	</div>
+{% endblock %}
+{% block js %}
+	<script type="text/javascript" src="{{ url_for('static',filename='js/add.js') }}"></script>
+{% endblock %}

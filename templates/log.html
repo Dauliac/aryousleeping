@@ -1,0 +1,43 @@
+{% extends "base.html" %} 
+{% block styles %}
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/log.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="window">
+    <div class="bar">
+        <div class="btn"></div>
+    </div>
+    <div class="body">
+        <div id="term">
+            <div class="prompt">$ <span class="command">ping http://{{ server.hostname }}</span></div>
+        </div>
+    </div>
+</div>
+
+<div id="term">
+</div>
+
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+    $(setInterval(
+        function () {
+            let server = { "id": {{ server.id }},
+            };
+
+    $.getJSON('/_get_logs/',
+        server,
+        function (data) {
+            console.log(data)
+            let div = '<div class="prompt">' + data + '</div>'
+            $("#term").append(div);
+            if ($("#term > p").length > 10) {
+                $('#term').find('p').last().remove();
+            }
+        }
+    )
+        },
+    2000))
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <title>aryousleeping</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Press+Start+2P|Source+Code+Pro');
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/styles.css') }}">
+  <script type="text/javascript" src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/jquery-ui.min.js') }}"></script> {% block styles %}{% endblock %}
+</head>
+
+<body>
+  <header>
+    <div class="spacer"></div>
+    <a href="{{ url_for('login') }}">
+      <h1>aryousleeping</h1>
+    </a>
+    <div class="user">
+      {% block user_space %}{% endblock %}
+    </div>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  {% if notify %}
+  <div class="toast animated fadeInLeft">
+    <p class="toast-content">{{ notify }}</p>
+  </div>
+  {% endif %} {% block js %}{% endblock %}
+  <script type="text/javascript"> 
+    setTimeout(function () {
+      $(".toast").removeClass("fadeOutLeft");
+      $(".toast").addClass("fadeInLeft, show");
+      let delay = 3000;
+      setTimeout(function () {
+        $(".toast").addClass('fadeOutLeft');
+      }, delay);
+    }, 500)
+  </script>
+</body>
+
+</html>

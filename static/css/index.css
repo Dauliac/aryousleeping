@@ -1,0 +1,276 @@
+.toolbar{
+  padding: 0 80px 0 80px;
+  width: 100%;
+  height: 40px;
+}
+.add-server{
+  width: 300px;
+  position: relative;
+  z-index: 10;
+  top: 150px;
+  left: 37%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+input{
+  border: 3px solid #585858;
+}
+.send-form{
+  padding: 4px 4px 4px 4px;
+  border: none;
+  box-shadow: 0.15rem 0.30rem #12181e;
+  color: white;
+  background-color: #506479;
+}
+.add-header{
+  font-size: 17px;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px 0 10px;
+  background: rgb(127, 199, 80);
+  height: 25px;
+  border-radius: 0.5rem 0.5rem 0 0;
+  position: relative;
+  z-index: 11;
+}
+.cancel-form_button{
+  background-color: #ee7070;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.cancel-form_button-icon{
+  margin-left: -8px;
+  margin-top: -2px;
+}
+
+.add-content{
+    height: 50px;
+    border-left: 1px solid rgb(116, 180, 74);
+    border-right: 1px solid rgb(116, 180, 74);
+    border-bottom: 1px solid rgb(116, 180, 74);
+    background: #232323;
+    padding: 30px 15px 10px 15px;
+    box-shadow: 0 0.25rem 0.7rem #12181e;
+    position: relative;
+    z-index: 12;
+}
+
+.server-stats{
+  box-shadow: 0 0.25rem 0.5rem #12181e;
+  background: #3a3a3a;
+  margin: 12px 80px 12px 80px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.server{
+  width: 110px;
+  height: 30px;
+  background: #3a3a3a;
+  border-radius: 1px;
+}
+.server-infos{
+  color: white;
+  background-color: #191919;
+  text-align:center;
+  min-width: 400px;
+  padding: 7px 0 7px 0;
+  animation: screenbackground 0.14s 0.10s linear infinite;
+}
+
+.server-option{
+  display: flex;
+  justify-content: end;
+  flex-wrap: nowrap;
+}
+
+.cursor {
+  animation: blink 1.5s 0s infinite;
+}
+
+.server ul{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.server:first-child ul li{
+  width: 12px;
+  height: 12px;
+  float: left;
+  margin-left: 10px;
+  margin-top: 12px;
+  background: rgba(149,244,118,0.6);
+}
+
+.server ul li:first-child{
+  animation: pattern1 0.14s linear infinite;
+}
+
+.server ul li:nth-child(2){
+  animation: pattern1 0.14s 0.02s linear infinite;
+}
+
+.server ul li:last-child{
+  animation: pattern1 0.14s 0.05s linear infinite;
+}
+
+@keyframes screenbackground{
+  90%{
+    background: #191919;
+  }
+  100%{
+    background: #292929;
+  }
+}
+
+@keyframes pattern1{
+  0%{
+    background: rgba(149,244,118,0.6);
+  }
+  100%{
+    background: rgba(149,244,118,1);
+  }
+}
+
+.warning ul li{
+  width: 12px;
+  height: 12px;
+  float: left;
+  margin-left: 10px;
+  margin-top: 12px;
+  background: rgba(245,190,0,0.6);
+}
+
+.warning ul li:first-child{
+  animation: pattern2 0.14s linear infinite;
+}
+
+.warning ul li:nth-child(2){
+  animation: pattern2 0.14s 0.02s linear infinite;
+}
+
+.warning ul li:last-child{
+  animation: pattern2 0.14s 0.05s linear infinite;
+}
+
+@keyframes pattern2{
+  0%{
+    background: rgba(245,190,0,0.6);
+  }
+  100%{
+    background: rgba(245,190,0,1);
+  }
+}
+
+.error ul li{
+  width: 6px;
+  height: 6px;
+  float: left;
+  margin-left: 10px;
+  margin-top: 12px;
+  background: rgba(236,69,62,0.6);
+}
+
+.error ul li:first-child{
+  animation: pattern3 0.9s linear infinite;
+}
+
+.error ul li:nth-child(2){
+  animation: pattern3 0.9s linear infinite;
+}
+
+.error ul li:last-child{
+  animation: pattern3 0.9s linear infinite;
+}
+
+@keyframes pattern3{
+  0%{
+    background: rgba(236,69,62,0.6);
+  }
+  80%{
+    background: rgba(236,69,62,0.6);
+  }
+  100%{
+    background: rgba(236,69,62,1);
+  }
+}
+@-webkit-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-o-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
