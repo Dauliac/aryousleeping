@@ -20,4 +20,4 @@ def get_chat_id(token, user_token):
 
 def send_message(chat_id, token, text="your server is down."):
     url = BASE_URL + '{token}/sendMessage?chat_id={chat_id}&text={text}'.format(token=token,chat_id=chat_id, text=text)
-    requests.get(url)
+    requests.post(url)
