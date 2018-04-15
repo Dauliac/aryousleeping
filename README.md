@@ -1,6 +1,6 @@
 # Aryousleeping
 
-##Describe
+ ## Describe
 
 this app is a courses work which this objective: flask web app to see if your servers are on
 
@@ -17,12 +17,14 @@ and edit the `secret_config.py` as you wish.
 Run the app with :
 
 ```bash
+$ source env_ays/bin/activate
 $ python app.py
 ```
 
 or :
 
 ```bash
+$ source env_ays/bin/activate
 $ chmod +x app.py
 $ ./app.py
 ```
