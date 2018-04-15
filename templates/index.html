@@ -1,26 +1,31 @@
 {% extends "base.html" %}
 {% block styles %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/add.css') }}">
+{% endblock %}
+{% block user_space %}
+	<a class="button" href="/logout">logout</a>
+	<a class="button" href="/user">you</a>
+	<button class="button" id="show-form_button" onclick="toogleForm()">Add server</button>
+
 {% endblock %}
 {% block content %}
 	<div class="toolbar">
-			<a class="button" href="/logout">logout</a>
-			<button class="button" id="show-form_button" onclick="toogleForm()">Add server</button>
-			<div class=".add-container">
-				<div id="form" class="add-server">
-					<div class=add-header>
-						<span>add server</span>
-						<button class="cancel-form_button" onclick="toogleForm()">
-							<i class="cancel-form_button-icon material-icons">close</i>
-						</button>
+				<div class=".add-container">
+					<div id="form" class="add-container">
+						<div class=add-header>
+							<span>add server</span>
+							<button class="cancel-form_button" onclick="toogleForm()">
+								<i class="cancel-form_button-icon material-icons">close</i>
+							</button>
+						</div>
+						<form class="add-content" action="/admin/server/add/" method="POST">
+							<input type="hostname" name="hostname" placeholder="Hostname">
+							<input type="alias" name="alias" placeholder="Alias">
+							<input class="button" type="submit" value="Add Server">
+						</form>
 					</div>
-					<form class="add-content" action="/admin/server/add/" method="POST">
-						<input type="hostname" name="hostname" placeholder="Hostname">
-						<input type="alias" name="alias" placeholder="Alias">
-						<input class="button" type="submit" value="Add Server">
-					</form>
 				</div>
-			</div>
 		</div>
 	<div>
 	 {% for server in servers %}

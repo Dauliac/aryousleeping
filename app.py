@@ -5,9 +5,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
-from time import localtime
-from time import strftime
-from time import sleep
+import telegram as tlg
+from datetime import date, time, datetime
 import requests
 import json
 
@@ -19,6 +18,15 @@ db = SQLAlchemy(app)
 # variable ===========================================================================
 SALT_KEY = app.config['SALT_KEY']
 ALERT_DELTA = app.config['ALERT_DELTA']
+TELEGRAM_TOKEN = app.config['TELEGRAM_TOKEN']
+
+
+# functions ===========================================================================
+def hash_string(password):
+    password = password.encode('UTF-8')
+    password = hashlib.pbkdf2_hmac('sha256', password, SALT_KEY, 100000)
+    password = binascii.hexlify(password).decode('UTF-8')
+    return password
 
 
 # DB ===========================================================================
@@ -26,13 +34,17 @@ ALERT_DELTA = app.config['ALERT_DELTA']
 class User(db.Model):
     """ Create user table"""
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(256))
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(256), nullable=False)
+    chat_id = db.Column(db.Integer, unique=True)
+    chat_token = db.Column(db.String(256), nullable=False)
     server = db.relationship('Server', backref='user', cascade="all, save-update, merge, delete")
 
     def __init__(self, username, password):
         self.username = username
         self.password = password
+        self.chat_token = hash_string(username + password + datetime.now().replace(microsecond=0))
+        self.chat_id = None
 
 
 class Server(db.Model):
@@ -72,44 +84,42 @@ class Log(db.Model):
         self.date = date
         self.server_id = server_id
 
-        
 # Init
 db.create_all()
-
-
-# functions ===========================================================================
-def hash_string(password):
-    password = password.encode('UTF-8')
-    password = hashlib.pbkdf2_hmac('sha256', password, SALT_KEY, 100000)
-    password = binascii.hexlify(password).decode('UTF-8')
-    return password
-
-
-def now():
-    return strftime("%Y-%m-%d %H:%M:%S", localtime())
-
 
 # Async ===========================================================================
 # functions
 def ping_all(server_id):
-    try:
-        for server in servers_global:
-            if server.id == server_id:
-                try:
-                    url = 'http://' + server.hostname
-                    rsp = requests.get(url, timeout=100)
-                    response = {'code': rsp.status_code,
-                                'date': now()}
-                except:
-                    response = {'code': 500,
-                                'date': now()}
-                new_log = Log(code=response['code'], date=response['date'], server_id = server.id )
-                db.session.add(new_log)
-                db.session.query(Server).filter(Server.id == server_id).update({'last_status': response['code']})
-                db.session.commit()
-
-    except:
-        pass
+    for server in servers_global:
+        if server.id == server_id:
+            print
+            srv = db.session.query(Server).filter(Server.id == server_id).first()
+            try:
+                url = 'http://' + server.hostname
+                rsp = requests.get(url, timeout=100)
+                response = {'code': rsp.status_code,
+                            'date': datetime.now().replace(microsecond=0)}
+            except:
+                response = {'code': 500,
+                            'date': datetime.now().replace(microsecond=0)}
+                now = datetime.now().replace(microsecond=0)
+                time_limit = 60*60*1  # hour minute secondes
+                if not srv.last_alert:
+                    delta = time_limit
+                else:
+                    print(srv.hostname)
+                    delta = now - srv.last_alert
+                    delta = delta.total_seconds()
+                if delta >= time_limit:
+                    message = "Alert ! server {alias} on http://{hostname} is down ! ".format(
+                            alias=srv.alias, 
+                            hostname=srv.hostname)
+                    srv.last_alert = now
+                    tlg.send_message(srv.user.chat_id, TELEGRAM_TOKEN,message)
+            new_log = Log(code=response['code'], date=response['date'], server_id = server.id )
+            db.session.add(new_log)
+            srv.last_status = response['code']
+            db.session.commit()
 
 
 
@@ -122,7 +132,7 @@ for server in servers_global:
         scheduler.add_job(
         func=ping_all,
         args=[server.id ],
-        trigger=IntervalTrigger(seconds=2),
+        trigger=IntervalTrigger(minutes=1),
         id='logs_server_' + str(server.id),
         name='Log severs'  + str(server.id),
         max_instances=2,
@@ -136,6 +146,9 @@ for server in servers_global:
 def login():
     """Login Form"""
     if request.method == 'GET':
+        test_user = User.query.first()
+        if not test_user:
+            return redirect(url_for('register'))
         if not session.get('auth_user'):
             return render_template('login.html')
         else:
@@ -147,14 +160,15 @@ def login():
             data = User.query.filter_by(username = name, password = passw).first()
             if data is not None:
                 user = {'id': data.id,
-                        'username': data.username}
+                        'username': data.username,
+                        'chat_token': data.chat_token}
                 session['auth_user'] = user
                 return redirect(url_for('admin'))
             else:
                 return render_template('login.html', notify="bad identifier")
         except:
             return render_template('login.html', notify="WTF error")
-            
+
 
 # server
 @app.route('/admin/', methods=['GET', 'POST'])
@@ -181,7 +195,7 @@ def add_server():
             scheduler.add_job(
                 func=ping_all,
                 args=[srv.id],
-                trigger=IntervalTrigger(seconds=2),
+                trigger=IntervalTrigger(minutes=1),
                 id='logs_server_' + str(srv.id),
                 name='Log server: ' + str(srv.id),
                 max_instances=2,
@@ -195,8 +209,9 @@ def get_server(srv_id):
     if not session.get('auth_user'):
         return redirect(url_for('login'))
     srv = Server.query.filter_by(id = srv_id).first()
+    old_logs = srv.log
 
-    return render_template('log.html', server = srv)
+    return render_template('log.html', server = srv, old_logs = old_logs)
 
 @app.route('/_get_logs/')
 def get_logs():
@@ -230,24 +245,53 @@ def remove_server(srv_id):
 # session
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
-    """Register user"""
-    if request.method == 'POST':
-        test_user = User.query.filter_by(username=request.form['username']).first
-        if not test_user:
-            new_user = User(username=request.form['username'], password=hash_string(request.form['password']))
-            db.session.add(new_user)
-            db.session.commit()
-        else:
-            return render_template('register.html', notify="user already exist")
+    """Register user"""        
+    test_user = User.query.first()
+    if test_user:
+        return redirect(url_for('login'))
+    if requestgenerate_token().method == 'POST':
+        print("new_user")
+        new_user = User(username=request.form['username'], password=hash_string(request.form['password']))
+        db.session.add(new_user)
+        db.session.commit()
         return redirect(url_for('login'))
     else:
         return render_template('register.html')
+
+
+@app.route('/user/', methods=['GET', 'POST'])
+def get_user():
+    """Show user"""
+    notify = ''
+    auth_user = session.get('auth_user')
+    if request.method == 'POST':
+        password = request.form['password']
+        passw_confirm = request.form['password-confirm']
+        if password != passw_confirm:
+            notify = "Not the same passwords"
+        else:
+            user_to_update = User.query.filter_by(id = auth_user['id']).first()
+            user_to_update.password = hash_string(password)
+            db.session.commit()
+            notify = "password updated !"
+    return render_template('user.html', user = auth_user, notify = notify)
 
 @app.route("/logout/")
 def logout():
     """Logout user"""
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/user/telegram/', methods=['GET'])
+def set_user_telegram():
+    """Show user"""
+    user = session.get('auth_user')
+    result = tlg.get_chat_id(TELEGRAM_TOKEN, user['chat_token'])
+    user_to_update = User.query.filter_by(id = user['id']).first()
+    user_to_update.chat_id = result
+    db.session.commit()
+    tlg.send_message(user_to_update.chat_id, TELEGRAM_TOKEN, "Token activated")
+    return redirect(url_for('get_user'))
 
 
 @app.errorhandler(404)

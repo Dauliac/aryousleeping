@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/user.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/add.css') }}">
+{% endblock %}
+{% block user_space %}
+<a class="button" href="/logout">logout</a>
+{% endblock %}
+{% block content %}
+    <div class="printer">
+        <div class="printer-output output-top"></div>
+        <div class="printer-output output-bottom"></div>
+        <div class="printer-paper">
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <div class="printer-midline white">
+                    <span class="token-input-title">Telegram token :</span>
+                    <input class="line-input"type="text" value="{{ user.chat_token }}" id="tokenInput">
+                </div>
+                <div class="printer-perforation"></div>
+            </div>
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <div class="printer-midline blue">
+                    <button class="token-button paper-button" onclick="copyFunction()">Copy Telegram Token</button>
+                    <a class="paper-button" href="{{ url_for('set_user_telegram') }}">Active Telegram Token</a>
+                </div>
+                <div class="printer-perforation"></div>
+            </div>
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <div class="printer-midline white"></div>
+                <div class="printer-perforation"></div>
+            </div>
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <form class="printer-midline blue" action="{{ url_for('get_user') }}" method="POST">
+                    <input class="line-input" type="password" name="password" placeholder="password">
+                    <input class="line-input" type="password" name="password-confirm" placeholder="password confirm">
+                    <input class="paper-button" type="submit" value="change password">
+                </form>
+                <div class="printer-perforation"></div>
+            </div>
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <div class="printer-midline white"></div>
+                <div class="printer-perforation"></div>
+            </div>
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <div class="printer-midline blue"></div>
+                <div class="printer-perforation"></div>
+            </div>
+            <div class="printer-line">
+                <div class="printer-perforation"></div>
+                <div class="printer-midline white"></div>
+                <div class="printer-perforation"></div>
+            </div>
+        </div>
+    <!-- </div>
+
+    <p class="user-token">
+    <button class="button" id="show-form_button" onclick="toogleForm()">Add server</button>
+    <div class=".add-container">
+    <div id="form" class="add-container">
+        <div class=add-header>
+            <span>change Password</span>
+            <button class="cancel-form_button" onclick="toogleForm()">
+                <i class="cancel-form_button-icon material-icons">close</i>
+            </button>
+        </div>
+        <form class="add-content" action="/user/" method="POST">
+            <input type="password" name="password" placeholder="password">
+            <input type="password" name="password-confirm" placeholder="password confirm">
+            <input class="button" type="submit" value="change password">
+        </form>
+    </div> -->
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static',filename='js/add.js') }}"></script>
+<script type="text/javascript">
+    function copyFunction() {
+        var copyText = document.getElementById("tokenInput");
+        copyText.select();
+
+        document.execCommand("Copy");
+    }
+    </script>
+{% endblock %}

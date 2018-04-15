@@ -2,8 +2,11 @@
 {% block styles %}
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/log.css') }}">
 {% endblock %}
+{% block user_space %}
+<a class="button" href="/logout">logout</a>
+<a class="button" href="/user">you</a>
+{% endblock %}
 {% block content %}
-
 <div class="window">
     <div class="bar">
         <div class="btn"></div>
@@ -11,6 +14,11 @@
     <div class="body">
         <div id="term">
             <div class="prompt">$ <span class="command">ping http://{{ server.hostname }}</span></div>
+            {% for log in old_logs %}
+                <div class="prompt">
+                    {% raw %}{{% endraw %}"STATUS": "{{log.code}}", "DATE": "{{log.date}}"{% raw %}}{% endraw %}
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -38,6 +46,6 @@
         }
     )
         },
-    2000))
+    60000))
 </script>
 {% endblock %}

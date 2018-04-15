@@ -1,0 +1,7 @@
+APScheduler
+PyMySQL
+requests
+Flask
+Flask-SQLAlchemy
+
+

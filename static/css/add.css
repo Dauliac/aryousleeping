@@ -1,0 +1,53 @@
+.add-container{
+  width: 350px;
+  position: relative;
+  z-index: 10;
+  top: 150px;
+  left: 37%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.add-header{
+  font-size: 17px;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px 0 10px;
+  background: rgb(127, 199, 80);
+  height: 25px;
+  border-radius: 0.5rem 0.5rem 0 0;
+  position: relative;
+  z-index: 11;
+}
+.send-form{
+  padding: 4px 4px 4px 4px;
+  border: none;
+  box-shadow: 0.15rem 0.30rem #12181e;
+  color: white;
+  background-color: #506479;
+}
+.cancel-form_button{
+  background-color: #ee7070;
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.cancel-form_button-icon{
+  margin-left: -8px;
+  margin-top: -2px;
+}
+
+.add-content{
+    height: 50px;
+    border-left: 1px solid rgb(116, 180, 74);
+    border-right: 1px solid rgb(116, 180, 74);
+    border-bottom: 1px solid rgb(116, 180, 74);
+    background: #232323;
+    padding: 30px 15px 10px 15px;
+    box-shadow: 0 0.25rem 0.7rem #12181e;
+    position: relative;
+    z-index: 12;
+}

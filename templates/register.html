@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block styles %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/login.css') }}"> {% endblock %}
 {% block content %}
-<form id="login" action="/" method="POST">
+<form id="register" action="/register/" method="POST">
   <div class="user what visible">
     What is your Username?
     <input class="focus" type="username" name="username">
@@ -14,5 +14,5 @@
 </form>
 {% endblock %} 
 {% block js %}
-<script type="text/javascript" src="{{ url_for('static',filename='js/login.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/register.js') }}"></script>
 {% endblock %}
