@@ -8,7 +8,7 @@ this app is a courses work which this objective: flask web app to see if your se
 
 note: python version is [python3.6.4](https://www.python.org/downloads/release/python-364/)
 
-create an db named `aryousleeping`
+create a database named `aryousleeping`
 
 and edit the `secret_config.py` as you wish.
 
@@ -28,4 +28,9 @@ $ source env_ays/bin/activate
 $ chmod +x app.py
 $ ./app.py
 ```
-
+## Telegram
+create a chat with the bot aryousleeping and make with your token
+```
+/start <areyousleeping token>
+```
+you can get your token in the user section named 'you'.
